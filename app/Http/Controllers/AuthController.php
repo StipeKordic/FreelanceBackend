@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +22,7 @@ class AuthController extends Controller
             'last_name'=>'required|string'
         ]);
 
-        return User::create(
+        $user = User::create(
             [
                 'email'=>$request->email,
                 'first_name'=>$request->first_name,
@@ -29,6 +31,12 @@ class AuthController extends Controller
 
             ]
         );
+        UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => 3
+        ]);
+
+        return $user;
     }
 
     public function login(Request $request)
@@ -63,5 +71,15 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response('Success');
+    }
+
+    public function destroy($id)
+    {
+        $userrole = UserRole::where('user_id', $id);
+        $userrole->delete();
+        $post = Post::where('user_id', $id);
+        $post->delete();
+        $user = User::where('id', $id);
+        return $user->delete();
     }
 }

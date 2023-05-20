@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UserRoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ Route::prefix('services')->group(function (){
 Route::prefix('auth')->group(function(){
     Route::post('register',[AuthController::class,'register']);
     Route::post('login',[AuthController::class,'login']);
+    Route::delete('{user}',[AuthController::class,'destroy']);
     Route::get('logout',[AuthController::class,'logout'])
         ->middleware('auth:sanctum');
     Route::get('user',[AuthController::class,'user'])
@@ -52,4 +54,12 @@ Route::prefix('roles')->group(function (){
     Route::post('',[RoleController::class,'store']);
     Route::put('{role}',[RoleController::class,'update']);
     Route::delete('{role}',[RoleController::class,'destroy']);
+});
+
+Route::prefix('userroles')->group(function (){
+    Route::get('',[UserRoleController::class,'index']);
+    Route::get('{id}',[UserRoleController::class,'show']);
+    Route::post('',[UserRoleController::class,'store']);
+    Route::put('{id}',[UserRoleController::class,'update']);
+    Route::delete('{id}',[UserRoleController::class,'destroy']);
 });
