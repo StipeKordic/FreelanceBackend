@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('description');
             $table->float('review')->nullable();
             $table->integer('num_reviews')->nullable();
+            $table->string('image_path');
             $table->timestamps();
         });
     }

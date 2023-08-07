@@ -19,16 +19,25 @@ class AuthController extends Controller
             'email'=>'required|email',
             'password'=> 'required|confirmed',
             'first_name'=>'required|string',
-            'last_name'=>'required|string'
+            'last_name'=>'required|string',
+            'image_path'=>'nullable|image|mimes:jpeg,png,jpg'
         ]);
+        $image_path = null;
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $image_path = $image->store('images', 'public');
+        }else {
+            // Ako slika nije dostupna, postavite putanju do podrazumijevane slike
+            $image_path = 'images/profilna.jpg';
+        }
 
         $user = User::create(
             [
                 'email'=>$request->email,
                 'first_name'=>$request->first_name,
                 'last_name'=>$request->last_name,
-                'password'=>Hash::make($request->password)
-
+                'password'=>Hash::make($request->password),
+                'image_path'=>$image_path
             ]
         );
         UserRole::create([
@@ -56,7 +65,6 @@ class AuthController extends Controller
 
         $token = $user->createToken('pziToken')->plainTextToken;
 
-        return $token;
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer'

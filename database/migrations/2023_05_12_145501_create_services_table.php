@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('short_description')->unique();
             $table->timestamps();
+            $table->string('image_path');
         });
     }
 

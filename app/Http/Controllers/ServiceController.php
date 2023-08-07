@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -25,10 +26,20 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'image_path'=>'required|image|mimes:jpeg,png,jpg'
+        ]);
+        $image_path = null;
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $image_path = $image->store('images', 'public');
+        }
+
         return Service::create([
             'name'=>$request->name,
             'description'=>$request->description,
-            'short_description'=>$request->short_description
+            'short_description'=>$request->short_description,
+            'image_path'=>$image_path
         ]);
     }
 
@@ -52,11 +63,20 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
+        $validated = $request->validate([
+            'image_path'=>'nullable|image|mimes:jpeg,png,jpg'
+        ]);
+        $image_path = $service->image_path;
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $image_path = $image->store('images', 'public');
+        }
         return $service->update(
             [
                 'name'=>$request->name,
                 'description'=>$request->description,
-                'short_description'=>$request->short_description
+                'short_description'=>$request->short_description,
+                'image_path'=>$image_path
             ]);
     }
 
@@ -66,8 +86,11 @@ class ServiceController extends Controller
      * @param  \App\Models\Service  $service
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Service $service)
+    public function destroy($id)
     {
+        $post = Post::where('service_id', $id);
+        $post->delete();
+        $service = Service::where('id', $id);
         return $service->delete();
     }
 }
