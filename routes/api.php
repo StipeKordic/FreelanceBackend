@@ -28,10 +28,13 @@ Route::prefix('services')->group(function (){
     Route::post('',[ServiceController::class,'store']);
     Route::put('{service}',[ServiceController::class,'update']);
     Route::delete('{service}',[ServiceController::class,'destroy']);
+    Route::put('image/{service}',[ServiceController::class,'updateImage']);
 });
 
 Route::prefix('auth')->group(function(){
+    Route::get('',[AuthController::class,'index']);
     Route::post('register',[AuthController::class,'register']);
+    Route::put('updateUser/{user}',[AuthController::class,'updateUser']);
     Route::post('login',[AuthController::class,'login']);
     Route::delete('{user}',[AuthController::class,'destroy']);
     Route::get('logout',[AuthController::class,'logout'])
@@ -46,6 +49,10 @@ Route::prefix('posts')->group(function (){
     Route::post('',[PostController::class,'store']);
     Route::put('{post}',[PostController::class,'update']);
     Route::delete('{post}',[PostController::class,'destroy']);
+    Route::get('filterByUser/{userId}',[PostController::class,'filterByUser']);
+    Route::get('filterByService/{serviceId}',[PostController::class,'filterByService']);
+    Route::get('filterByPrice/{start}/{end}',[PostController::class,'filterByPrice']);
+    Route::get('filterByReview/{review}',[PostController::class,'filterByReview']);
 });
 
 Route::prefix('roles')->group(function (){
@@ -62,4 +69,5 @@ Route::prefix('userroles')->group(function (){
     Route::post('',[UserRoleController::class,'store']);
     Route::put('{id}',[UserRoleController::class,'update']);
     Route::delete('{id}',[UserRoleController::class,'destroy']);
+    Route::get('getRoleByUser/{userId}',[UserRoleController::class,'getRoleByUser']);
 });

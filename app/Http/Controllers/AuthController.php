@@ -47,6 +47,37 @@ class AuthController extends Controller
 
         return $user;
     }
+    public function index()
+    {
+        return User::all();
+    }
+    public function updateUser(Request $request, User $user){
+        $validated = $request->validate([
+            'email'=>'nullable|email',
+            'new_password'=> 'nullable|confirmed',
+            'first_name'=>'nullable|string',
+            'last_name'=>'nullable|string',
+            'image_path'=>'nullable|image|mimes:jpeg,png,jpg',
+
+        ]);
+        if ($request->has('password')){
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
+            }
+            $new_password = Hash::make($request->new_password);
+        }else {
+            $new_password = $user->password;
+        }
+        return $user->update(
+            [
+                'first_name'=>$request->first_name,
+                'last_name'=>$request->last_name,
+                'email'=>$request->email,
+                'password'=>$new_password
+            ]);
+    }
 
     public function login(Request $request)
     {

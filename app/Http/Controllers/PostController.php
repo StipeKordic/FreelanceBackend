@@ -97,4 +97,25 @@ class PostController extends Controller
     {
         return $post->delete();
     }
+
+    public function filterByUser($idUser)
+    {
+        $posts = Post::where('user_id', $idUser)->get();
+        return response()->json($posts);
+    }
+    public function filterByService($serviceId)
+    {
+        $posts = Post::where('service_id', $serviceId)->get();
+        return response()->json($posts);
+    }
+    public function filterByPrice($start, $end)
+    {
+        $posts = Post::whereBetween('price', [$start, $end])->get();
+        return response()->json($posts);
+    }
+    public function filterByReview($review)
+    {
+        $posts = Post::where('review', '>=', $review)->get();
+        return response()->json($posts);
+    }
 }

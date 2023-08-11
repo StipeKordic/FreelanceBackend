@@ -70,4 +70,9 @@ class UserRoleController extends Controller
         $userRole = UserRole::where('id', $id);
         return $userRole->delete();
     }
+    public function getRoleByUser($idUser)
+    {
+        $userRole = UserRole::where('user_id', $idUser)->get();
+        return response()->json($userRole);
+    }
 }

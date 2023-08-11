@@ -64,7 +64,10 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validated = $request->validate([
-            'image_path'=>'nullable|image|mimes:jpeg,png,jpg'
+            'image_path'=>'nullable|image|mimes:jpeg,png,jpg',
+            'name'=>'nullable',
+            'description'=>'nullable',
+            'short_description'=>'nullable',
         ]);
         $image_path = $service->image_path;
         if ($request->hasFile('image_path')) {
@@ -76,6 +79,19 @@ class ServiceController extends Controller
                 'name'=>$request->name,
                 'description'=>$request->description,
                 'short_description'=>$request->short_description,
+                'image_path'=>$image_path
+            ]);
+    }
+    public function updateImage(Request $request, Service $service)
+    {
+        $validated = $request->validate([
+            'image_path'=>'required|image|mimes:jpeg,png,jpg'
+        ]);
+        $image = $request->file('image_path');
+        $image_path = $image->store('images', 'public');
+
+        return $service->update(
+            [
                 'image_path'=>$image_path
             ]);
     }
