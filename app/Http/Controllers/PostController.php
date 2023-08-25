@@ -14,7 +14,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::all();
+        $posts = Post::with('service', 'user')->get();
+        return response()->json($posts);
     }
 
     /**
@@ -100,12 +101,20 @@ class PostController extends Controller
 
     public function filterByUser($idUser)
     {
-        $posts = Post::where('user_id', $idUser)->get();
+        $posts = Post::with('service', 'user')
+            ->whereHas('user', function ($query) use ($idUser) {
+                $query->where('id', $idUser);
+            })
+            ->get();
         return response()->json($posts);
     }
     public function filterByService($serviceId)
     {
-        $posts = Post::where('service_id', $serviceId)->get();
+        $posts = Post::with('service', 'user')
+            ->whereHas('service', function ($query) use ($serviceId) {
+            $query->where('id', $serviceId);
+        })
+            ->get();
         return response()->json($posts);
     }
     public function filterByPrice($start, $end)

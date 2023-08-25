@@ -49,7 +49,10 @@ class AuthController extends Controller
     }
     public function index()
     {
-        return User::all();
+        $users = User::with('userRole')
+            ->withCount('posts')
+            ->get();
+        return response()->json($users);
     }
     public function updateUser(Request $request, User $user){
         $validated = $request->validate([

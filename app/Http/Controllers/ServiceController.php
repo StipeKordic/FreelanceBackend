@@ -15,7 +15,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        return Service::all();
+        $services = Service::withCount('posts')->get();
+        return response()->json($services);
     }
 
     /**
