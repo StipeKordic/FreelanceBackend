@@ -88,8 +88,10 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'image_path'=>'required|image|mimes:jpeg,png,jpg'
         ]);
-        $image = $request->file('image_path');
-        $image_path = $image->store('images', 'public');
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $image_path = $image->store('images', 'public');
+        }
 
         return $service->update(
             [
